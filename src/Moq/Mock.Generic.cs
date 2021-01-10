@@ -468,6 +468,24 @@ namespace Moq
 			var setup = Mock.Setup(this, expression, null);
 			return new NonVoidSetupPhrase<T, TResult>(setup);
 		}
+		
+		/// <summary>
+		///   Specifies a setup on the mocked type for a call to a non-<see langword="void"/> (value-returning) method.
+		/// </summary>
+		/// <param name="expression">Lambda expression that specifies the method invocation.</param>
+		/// <param name="resultType">Result type parameter</param>
+		/// <remarks>
+		///   If more than one setup is specified for the same method or property,
+		///   the latest one wins and is the one that will be executed.
+		/// </remarks>
+		[SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "By design")]
+		public object Setup(LambdaExpression expression, Type resultType)
+		{
+			var setup = Mock.Setup(this, expression, null);
+			var instance = Activator.CreateInstance(typeof(NonVoidSetupPhrase<,>).MakeGenericType(typeof(T), resultType), setup);
+
+			return instance;
+		}
 
 		/// <summary>
 		///   Specifies a setup on the mocked type for a call to a property getter.
